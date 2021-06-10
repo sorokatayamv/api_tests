@@ -14,18 +14,32 @@
 						"exec": [
 							"var responseJson = JSON.parse(responseBody);\r",
 							"\r",
-							"var board_id = responseJson.id;\r",
-							"var board_name = responseJson.name;\r",
+							"//var board_id = responseJson.id;\r",
+							"//var board_name_to_set = responseJson.name;\r",
 							"\r",
-							"pm.environment.set(\"board_id\", board_id);\r",
-							"pm.environment.set(\"board_name\", board_name);\r",
-							"\r",
-							"pm.test(\"Board is created\", function (){\r",
-							"    pm.expect(board_name).to.equal(pm.environment.get(\"board_name\"));\r",
-							"});\r",
+							"pm.environment.set(\"board_id\", responseJson.id);\r",
+							"pm.environment.set(\"board_name\", responseJson.name)\r",
 							"\r",
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is valid and have a body\", function () {\r",
+							"     pm.response.to.be.ok;\r",
+							"     pm.response.to.be.withBody;\r",
+							"     pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body contains string 'id'\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"id\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body contains string 'name'\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"id\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -75,15 +89,6 @@
 			"name": "UpdateBoardName",
 			"event": [
 				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
 					"listen": "test",
 					"script": {
 						"exec": [
@@ -92,14 +97,28 @@
 							"var newName = responseJson.name;\r",
 							"pm.environment.set(\"new_board_name\", newName);\r",
 							"\r",
-							"\r",
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is valid and have a body\", function () {\r",
+							"     pm.response.to.be.ok;\r",
+							"     pm.response.to.be.withBody;\r",
+							"     pm.response.to.be.json;\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Response time is less than 200ms\", function () {\r",
 							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
 							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -153,6 +172,10 @@
 							"    pm.expect(responseJson.name).to.equal(pm.environment.get(\"new_board_name\"));\r",
 							"});\r",
 							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
 							"pm.test(\"Response time is less than 200ms\", function () {\r",
 							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
 							"});"
@@ -197,6 +220,12 @@
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
 							"});\r",
+							"\r",
+							"pm.test(\"Response have: '_value: null'\",\r",
+							" function (){\r",
+							"     var jsonData = pm.response.json();\r",
+							"      pm.expect(jsonData._value).to.eq(null);\r",
+							" });\r",
 							"\r",
 							"pm.test(\"Response time is less than 200ms\", function () {\r",
 							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
